@@ -1,10 +1,19 @@
 package com.example.powerlocks
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
 class PowerBlockService : AccessibilityService() {
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        try {
+            startForegroundService(Intent(this, KeepAliveService::class.java))
+        } catch (_: Exception) {
+        }
+    }
 
     override fun onAccessibilityEvent(e: AccessibilityEvent?) {
         try {
