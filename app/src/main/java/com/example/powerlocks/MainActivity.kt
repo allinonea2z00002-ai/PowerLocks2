@@ -2,6 +2,7 @@ package com.example.powerlocks
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.InputType
@@ -11,6 +12,10 @@ import android.widget.*
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 1)
+        }
 
         val layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -33,6 +38,10 @@ class MainActivity : Activity() {
                     getSharedPreferences("lock", MODE_PRIVATE).edit()
                         .putLong("end", System.currentTimeMillis() + mins * 60_000L)
                         .apply()
+                    try {
+                        startForegroundService(Intent(context, KeepAliveService::class.java))
+                    } catch (_: Exception) {
+                    }
                     status.text = "$mins মিনিটের জন্য লক চালু"
                 }
             }
